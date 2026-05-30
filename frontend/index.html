@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Реєстр ПЗ</title>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<h1>Реєстр програмного забезпечення</h1>
+
+<table border="1">
+
+<thead>
+<tr>
+<th data-sort="name">Name</th>
+<th data-sort="version">Version</th>
+<th data-sort="license">LicenseType</th>
+<th data-sort="seats">Seats</th>
+<th data-sort="comment">Comment</th>
+</tr>
+</thead>
+
+<tbody id="tableBody"></tbody>
+
+</table>
+
+<h2>Додати програму</h2>
+
+<form id="softwareForm">
+
+<input id="field1Input" placeholder="Name">
+<input id="field2Input" placeholder="Version">
+
+<select id="field3Select">
+  <option value="Free">Free</option>
+  <option value="Commercial">Commercial</option>
+  <option value="Academic">Academic</option>
+  <option value="Trial">Trial</option>
+</select>
+
+<input id="field4Text" type="number" placeholder="Seats">
+<textarea id="field5Text" placeholder="Comment"></textarea>
+
+<button type="submit">Додати</button>
+
+</form>
+
+<script src="app.js" defer></script>
+
+</body>
+</html>
