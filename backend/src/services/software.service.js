@@ -1,67 +1,71 @@
-const { v4: uuidv4 } = require("uuid");
 const softwareRepository = require("../repositories/software.repository");
 
-class SoftwareService {
-    
-    getAll() {
-        return softwareRepository.getAll();
-    }
-
-  
-    getById(id) {
-        const software = softwareRepository.getById(id);
-        if (!software) {
-            const error = new Error("Програму не знайдено");
-            error.status = 404;
-            error.code = "NOT_FOUND";
-            throw error;
-        }
-        return software;
-    }
-
-   
-    create(dto) {
-        const errors = [];
-      
-        if (!dto.name || dto.name.trim() === "") {
-            errors.push({ field: "name", message: "Назва є обов'язковою" });
-        }
-        if (!dto.version || dto.version.trim() === "") {
-            errors.push({ field: "version", message: "Версія є обов'язковою" });
-        }
-        if (!dto.seats || Number(dto.seats) <= 0) {
-            errors.push({ field: "seats", message: "Кількість місць має бути більшою за 0" });
-        }
-
-        
-        if (errors.length > 0) {
-            const error = new Error("Помилка валідації");
-            error.status = 400;
-            error.code = "VALIDATION_ERROR";
-            error.details = errors;
-            throw error;
-        }
-
-       
-        const newSoftware = {
-            id: uuidv4(), 
-            name: dto.name.trim(),
-            version: dto.version.trim(),
-            licenseType: dto.licenseType || "Free",
-            seats: Number(dto.seats),
-            comment: dto.comment || ""
-        };
-
-       
-        return softwareRepository.add(newSoftware);
-    }
-
-   
-    delete(id) {
-       
-        this.getById(id);
-        return softwareRepository.delete(id);
-    }
+async function getSoftwareList() {
+    return await softwareRepository.getAll();
 }
 
-module.exports = new SoftwareService();
+async function getSoftwareById(name) {
+    const item = await softwareRepository.getById(name);
+    if (!item) {
+        const err = new Error("Програму з такою назвою не знайдено");
+        err.status = 404;
+        throw err;
+    }
+    return item;
+}
+
+async function createSoftware(data) {
+    if (!data.name || data.name.trim() === "") {
+        const err = new Error("Назва програми є обов'язковою");
+        err.status = 400;
+        throw err;
+    }
+    if (data.seats === undefined || data.seats < 0 || isNaN(data.seats)) {
+        const err = new Error("Кількість місць (seats) не може бути меншою за 0");
+        err.status = 400;
+        throw err;
+    }
+
+    const newSoftware = {
+        name: data.name,
+        version: data.version || "1.0",
+        licenseType: data.licenseType || "Free",
+        seats: Number(data.seats),
+        comment: data.comment || ""
+    };
+
+    return await softwareRepository.add(newSoftware);
+}
+
+
+async function updateSoftware(name, data) {
+    await getSoftwareById(name); 
+
+    if (data.seats === undefined || data.seats < 0 || isNaN(data.seats)) {
+        const err = new Error("Кількість місць (seats) не може бути меншою за 0");
+        err.status = 400;
+        throw err;
+    }
+
+    const updatedData = {
+        version: data.version || "1.0",
+        licenseType: data.licenseType || "Free",
+        seats: Number(data.seats),
+        comment: data.comment || ""
+    };
+
+    return await softwareRepository.update(name, updatedData);
+}
+
+async function deleteSoftware(name) {
+    await getSoftwareById(name);
+    return await softwareRepository.remove(name);
+}
+
+module.exports = {
+    getSoftwareList,
+    getSoftwareById,
+    createSoftware,
+    updateSoftware,
+    deleteSoftware
+};

@@ -1,10 +1,10 @@
 const { run } = require("./dbClient");
 
 async function initDb() {
-    // Вмикаємо підтримку зв'язків між таблицями [cite: 142, 514]
+    
     await run("PRAGMA foreign_keys = ON;");
 
-    // Створюємо таблицю користувачів [cite: 145, 516]
+   
     await run(`
         CREATE TABLE IF NOT EXISTS Users (
             id INTEGER PRIMARY KEY,
@@ -14,17 +14,19 @@ async function initDb() {
         );
     `);
 
-    // Створюємо таблицю програмного забезпечення (твоя сутність) [cite: 1250]
-    await run(`
+    
+   await run(`
         CREATE TABLE IF NOT EXISTS Software (
-            id INTEGER PRIMARY KEY,
+            id TEXT PRIMARY KEY,
             name TEXT NOT NULL,
             version TEXT NOT NULL,
-            developer TEXT NOT NULL
+            licenseType TEXT DEFAULT 'Free',
+            seats INTEGER NOT NULL,
+            comment TEXT
         );
     `);
 
-    // Створюємо таблицю ліцензій зі зв'язками [cite: 151, 523]
+   
     await run(`
         CREATE TABLE IF NOT EXISTS Licenses (
             id INTEGER PRIMARY KEY,

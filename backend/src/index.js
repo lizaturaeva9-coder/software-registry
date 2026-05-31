@@ -21,41 +21,13 @@ async function start() {
             console.log(' Тестовий користувач успішно створений');
         } catch (err) {}
 
-        try {
-            await run(`INSERT INTO Software (id, name, version, developer) VALUES (1, 'VS Code', '1.85', 'Microsoft');`);
-        } catch (e) {}
-
-        try {
-            await run(`INSERT INTO Software (id, name, version, developer) VALUES (2, 'WebStorm', '2024.1', 'JetBrains');`);
-        } catch (e) {}
-
-        try {
-            await run(`INSERT INTO Software (id, name, version, developer) VALUES (3, 'Photoshop', '25.0', 'Adobe');`);
-        } catch (e) {}
-
-        try {
-            const stats = await all(`
-                SELECT 
-                    s.developer, 
-                    COUNT(l.id) AS licenseCount
-                FROM Licenses l
-                JOIN Software s ON l.softwareId = s.id
-                GROUP BY s.developer
-                ORDER BY licenseCount DESC
-                LIMIT 3;
-            `);
-            
-            console.log("\nТоп 3 девелопера за кількістю ліцензій:");
-            console.log(JSON.stringify(stats, null, 2)); 
-            console.log("\n");
-        } catch (err) {}
-
         app.listen(PORT, () => {
             console.log(` СЕРВЕР ЗАПУЩЕНО: http://localhost:${PORT}`);
         });
+
     } catch (err) {
         console.error(' Помилка при старті:', err.message);
     }
-}
+} 
 
-start();
+start(); 
