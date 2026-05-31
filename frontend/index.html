@@ -1,54 +1,64 @@
 <!DOCTYPE html>
-<html>
+<html lang="uk">
 <head>
-<meta charset="UTF-8">
-<title>Реєстр ПЗ</title>
-
-<link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Реєстр ПЗ</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
+    <div class="container">
+        <h1>Реєстр програмного забезпечення</h1>
 
-<h1>Реєстр програмного забезпечення</h1>
+        <div id="notice" style="color: red; margin-bottom: 10px; font-weight: bold;"></div>
+        
+        <div id="listStatus" style="margin-bottom: 10px; font-style: italic;"></div>
 
-<table border="1">
+        <table>
+            <thead>
+                <tr>
+                    <th data-sort="name" style="cursor: pointer;">Name</th>
+                    <th data-sort="version" style="cursor: pointer;">Version</th>
+                    <th data-sort="licenseType" style="cursor: pointer;">LicenseType</th>
+                    <th data-sort="seats" style="cursor: pointer;">Seats</th>
+                    <th data-sort="comment" style="cursor: pointer;">Comment</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                </tbody>
+        </table>
 
-<thead>
-<tr>
-<th data-sort="name">Name</th>
-<th data-sort="version">Version</th>
-<th data-sort="license">LicenseType</th>
-<th data-sort="seats">Seats</th>
-<th data-sort="comment">Comment</th>
-</tr>
-</thead>
+        <h2>Додати програму</h2>
+        <form id="softwareForm">
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" id="field1Input" required>
+            </div>
+            <div class="form-group">
+                <label>Version</label>
+                <input type="text" id="field2Input" required>
+            </div>
+            <div class="form-group">
+                <label>License Type</label>
+                <select id="field3Select">
+                    <option value="Free">Free</option>
+                    <option value="Academic">Academic</option>
+                    <option value="Commercial">Commercial</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Seats</label>
+                <input type="number" id="field4Text" required min="0">
+            </div>
+            <div class="form-group">
+                <label>Comment</label>
+                <textarea id="field5Text" rows="3"></textarea>
+            </div>
+            <button type="submit">Додати</button>
+        </form>
+    </div>
 
-<tbody id="tableBody"></tbody>
-
-</table>
-
-<h2>Додати програму</h2>
-
-<form id="softwareForm">
-
-<input id="field1Input" placeholder="Name">
-<input id="field2Input" placeholder="Version">
-
-<select id="field3Select">
-  <option value="Free">Free</option>
-  <option value="Commercial">Commercial</option>
-  <option value="Academic">Academic</option>
-  <option value="Trial">Trial</option>
-</select>
-
-<input id="field4Text" type="number" placeholder="Seats">
-<textarea id="field5Text" placeholder="Comment"></textarea>
-
-<button type="submit">Додати</button>
-
-</form>
-
-<script src="app.js" defer></script>
-
+    <script type="module" src="app.js"></script>
 </body>
 </html>
