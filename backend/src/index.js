@@ -1,33 +1,29 @@
-const app = require('./app');
-const { initDb } = require('./db/initDb');
-const { run, all } = require("./db/dbClient"); 
-const PORT = 3000;
+const express = require('express');
+const app = express();
 
-async function start() {
-    try {
-        await initDb();
-        console.log(' База даних готова');
+app.use(express.json());
+app.use(require('cors')()); 
 
-        const userId = 1;
-        const userEmail = "turaieva@knu.ua";
-        const userName = "Тураєва Єлизавета";
-        const userCreatedAt = new Date().toISOString();
 
-        try {
-            await run(`
-                INSERT INTO Users (id, email, name, createdAt) 
-                VALUES (${userId}, '${userEmail}', '${userName}', '${userCreatedAt}');
-            `);
-            console.log(' Тестовий користувач успішно створений');
-        } catch (err) {}
+app.use((req, res, next) => {
+    res.setHeader("X-Content-Type-Options", "nosniff");
+    res.setHeader("X-Frame-Options", "DENY");
+    res.setHeader("Content-Security-Policy", "default-src 'self'"); 
+    next();
+});
 
-        app.listen(PORT, () => {
-            console.log(` СЕРВЕР ЗАПУЩЕНО: http://localhost:${PORT}`);
-        });
+const softwareRoutes = require('./routes/software.routes');
+app.use('/api/software', softwareRoutes);
 
-    } catch (err) {
-        console.error(' Помилка при старті:', err.message);
-    }
-} 
 
-start(); 
+app.use((err, req, res, next) => {
+    console.error("Помилка:", err.message); 
+    res.status(500).json({
+        error: {
+            code: "INTERNAL_ERROR",
+            message: "Сталася помилка на сервері"
+        }
+    });
+});
+
+app.listen(3000, () => console.log('🚀 Сервер на 3000 порту'));

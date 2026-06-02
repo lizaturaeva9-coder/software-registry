@@ -1,30 +1,33 @@
-const { run } = require("./dbClient");
+const sqlite3 = require('sqlite3');
+const path = require('path');
+const fs = require('fs');
 
-async function initDb() {
-    
-    await run("PRAGMA foreign_keys = ON;");
+const dbDir = path.join(__dirname, '../../data');
+if (!fs.existsSync(dbDir)) fs.mkdirSync(dbDir);
 
-   
-    await run(`
-        CREATE TABLE IF NOT EXISTS Users (
-            id INTEGER PRIMARY KEY,
-            email TEXT NOT NULL UNIQUE,
-            name TEXT NOT NULL,
-            createdAt TEXT NOT NULL
-        );
-    `);
+const db = new sqlite3.Database(path.join(dbDir, 'app.db'));
 
-    
-   await run(`
-        CREATE TABLE IF NOT EXISTS Software (
-            id TEXT PRIMARY KEY,
-            name TEXT NOT NULL,
-            version TEXT NOT NULL,
-            licenseType TEXT DEFAULT 'Free',
-            seats INTEGER NOT NULL,
-            comment TEXT
-        );
-    `);
+db.serialize(() => {
+    db.run(`CREATE TABLE IF NOT EXISTS Users (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL);`);
+    db.run(`CREATE TABLE IF NOT EXISTS Software (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        version TEXT NOT NULL,
+        licenseType TEXT NOT NULL,
+        seats INTEGER NOT NULL,
+        comment TEXT NOT NULL,
+        ownerUserId INTEGER NOT NULL
+    );`);
+
+    db.get("SELECT COUNT(*) as count FROM Users", (err, row) => {
+        if (row && row.count === 0) {
+            db.run("INSERT INTO Users (name) VALUES ('Yelyzaveta'), ('Denys');");
+            db.run("INSERT INTO Software (name, version, licenseType, seats, comment, ownerUserId) VALUES ('VS Code', '1.90.2', 'Free', 30, 'Основне середовище', 1);");
+            db.run("INSERT INTO Software (name, version, licenseType, seats, comment, ownerUserId) VALUES ('WebStorm', '2024.1.2', 'Academic', 25, 'Секретний софт Дениса', 2);");
+        }
+    });
+});
+db.close();
 
    
     await run(`
@@ -41,6 +44,6 @@ async function initDb() {
     `);
 
     console.log("DB schema initialized"); 
-}
+
 
 module.exports = { initDb }; 

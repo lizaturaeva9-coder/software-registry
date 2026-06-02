@@ -1,0 +1,7 @@
+
+GET http://127.0.0.1:3000/api/software/FakeName' OR 1=1 --
+X-Demo-UserId: 1
+
+
+DELETE http://127.0.0.1:3000/api/software/НазваЧужоїПрограми
+X-Demo-UserId: 999
